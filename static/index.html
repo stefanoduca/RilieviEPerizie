@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8" />
+  <title>HTTPS</title>
+
+  <link rel="icon" href="img/icoVallauri.png" type="image/png" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+
+  <script src="./jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="./libreria.js"></script>
+  <script src="./index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="d-flex justify-content-center align-items-center" style="height: 94vh">
+
+  <!-- Login -->
+    <form id="frmLogin" class="container mt-5 p-4 shadow-lg rounded bg-light" style="max-width: 30vw">
+
+      <h1 class="text-center text-primary">Rilievi e Perizie</h1>
+      <p class="text-center text-secondary">Inserisci le tue credenziali per accedere al sistema.</p>
+
+      <div class="form-group">
+        <label for="txtOperatorCOde" class="font-weight-bold">Codice operatore:</label>
+        <input type="text" class="form-control border-primary" id="txtOperatorCOde" name="operator_code" required />
+      </div>
+      <div class="form-group">
+        <label for="txtPassword1" class="font-weight-bold">Password:</label>
+        <input type="password" class="form-control border-primary" id="txtPassword1" name="password" required />
+      </div>
+      <div class="form-group">
+        <button form="frmLogin" class="btn btn-primary w-100">Login</button>
+      </div>
+
+    </form>
+
+  <!-- Cambia password al primo accesso -->
+  <form id="frmChangePassword" class="container mt-5" style="display: none; max-width: 30vw;">
+
+    <h1 class="text-center">Cambia Password</h1>
+    <p class="text-center">Inserisci una nuova password.</p>
+
+    <div class="form-group">
+      <label for="txtPassword2">Vecchia Password:</label>
+      <input type="password" class="form-control" id="txtPassword2" name="password" required />
+    </div>
+    <div class="form-group">
+      <label for="txtNewPassword">Nuova Password:</label>
+      <input type="password" class="form-control" id="txtNewPassword" name="new_password" required />
+    </div>
+    <div class="form-group">
+      <button form="frmChangePassword" class="btn btn-primary w-100">Cambia Password</button>
+    </div>
+  </form>
+
+  <!-- Landing -->
+  <div id="divLanding" class="container mt-5">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm rounded">
+      <a class="navbar-brand font-weight-bold" href="#">Benvenuto</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"></li>
+            <a id="aEsci" class="nav-link font-weight-bold" href="#">Esci</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="divAdminLanding" class="row mt-5" style="display: none;">
+      <!-- Listbox Section -->
+      <div class="col-md-4">
+        <h4 class="text-primary font-weight-bold">Lista Utenti:</h4>
+        <br>
+        <div class="d-flex align-items-center">
+          <select id="divListBox" class="list-group border border-primary rounded flex-grow-1">
+          </select>
+          <button id="btnAddOperator" class="btn btn-success ml-2 bg-primary">Aggiungi Operatore</button>
+        </div>
+        <div id="divUserDetails" class="container mt-5 shadow-sm rounded bg-light p-4" style="display:none">
+          <h4 class="text-primary font-weight-bold">Dettagli Utente:</h4>
+          <br>
+          <p><strong>Nome:</strong> <span id="userName"></span></p>
+          <p><strong>Cognome:</strong> <span id="userLastName"></span></p>
+          <p><strong>Email:</strong> <span id="userEmail"></span></p>
+          <p><strong>Numero Perizie:</strong> <span id="userPerizieCount"></span></p>
+          <ul id="userPerizieList" class="list-group"></ul>
+            <!-- Dettagli delle perizie saranno aggiunti dinamicamente -->
+          </ul>
+        </div>
+        <div id="divUserDetails" class="container mt-5 shadow-sm rounded bg-light p-4" style="display:none"></div>
+      </div>
+      <!-- Hidden User Details Section -->
+    
+      <!-- Google App Section -->
+      <div class="col-md-8">
+        <h4 class="text-center text-primary font-weight-bold">Mappa Perizie:</h4>
+        <br>
+        <div id="divGoogleApp" class="border border-primary rounded shadow-sm" style="width: 100%; height: 30rem;">
+        </div>
+      </div>
+    </div>
+    <div id="divUserLanding" style="display: none;">
+      L'utente non ha i permessi per accedere a questa sezione.
+    </div>
+  </div>
+</body>
+
+</html>
