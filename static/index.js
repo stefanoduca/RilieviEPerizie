@@ -208,7 +208,7 @@ window.onload = async function () {
                <h1>Fotografie:</h1>
                <img src="img/perizia.jpg" style="width: 25%; height: 10rem;"></img>
                <img src="img/perizia.jpg" style="width: 25%; height: 10rem;"></img>
-               <img src="img/perizia.jpg" style="width: 25%; height: 10rem;"></img>
+               <img src=${perizia.fotografie[0].url} style="width: 25%; height: 10rem;"></img>
                <br>
                <br>
                <p><b>Note:</b> ${perizia.fotografie[0].commento}</p>`,
