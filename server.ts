@@ -1,6 +1,7 @@
 import http from 'http';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import cors, { CorsOptions } from 'cors';
 
 const app = express();
 
@@ -37,6 +38,22 @@ app.use('*', (req: any, res: any, next: any) => {
   console.log(req.method + ': ' + req.originalUrl);
   next();
 });
+const whitelist = ['http://localhost:3000', 'http://localhost:4200', 'https://rilievieperizieduca.onrender.com', 'http://localhost:8100'];
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    const trimmedOrigin = origin.trim();
+    console.log("Request from origin:", trimmedOrigin);
+    if (whitelist.includes(trimmedOrigin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + trimmedOrigin));
+    }
+  }
+};
+app.use(cors(corsOptions));
 
 //Client routes
 
