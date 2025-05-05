@@ -63,7 +63,8 @@ app.post('/autentica', (req: any, res: any, next: any) => {
 
     collection.findOne({ codice_operatore: req.body.username, password: req.body.password }, {
       projection: {
-        password: 0
+        password: 0,
+        token: 0
       }
     }).then((data: any) => {
       if (data) {
@@ -179,6 +180,119 @@ app.post('/addOperatore', async (req: any, res: any) => {
           res.status(500).send({ result: false, data: 'Error retrieving user' });
         });
       });
+    });
+  });
+});
+
+// API
+app.post('/api/autentica', (req: any, res: any) => {
+
+  getCollection('Utenti').then((collection: Collection) => {
+
+    collection.findOne({ codice_operatore: req.body.username, password: req.body.password }, {
+      projection: {
+        password: 0,
+      }
+    }).then((data: any) => {
+      if (data) {
+        res.send({ result: true, data: data });
+      } else {
+        res.status(401).send({ result: false, data: 'Unauthorized' });
+      }
+    }).catch((err: any) => {
+      console.error(err);
+      res.status(500).send({ result: false, data: 'Error retrieving user' });
+    });
+
+  }).catch((err) => {
+    res.status(500).send({ result: false, data: 'Unauthorized MongoDB: ' + err });
+  });
+  
+});
+
+app.post('/api/cambia-password', (req: any, res: any) => {
+
+  if (!req.headers['authorization'].length) {
+    res.status(401).send({ result: false, data: 'Unauthorized' });
+    return;
+  }
+
+  const token = req.headers['authorization'].split(' ')[1];
+
+  getCollection('Utenti').then((collection: Collection) => {
+
+    collection.updateOne({ token: token, password: req.body.password },{$set:{password: req.body.new_password, primo_accesso: false}}).then((data: any) => {
+      if (data.modifiedCount > 0) {
+        res.send({ result: true, data: data });
+      } else {
+        res.status(400).send({ result: false, data: 'Bad Request' });
+      }
+    }).catch((err: any) => {
+      console.error(err);
+      res.status(500).send({ result: false, data: 'Error retrieving user' });
+    });
+
+  }).catch((err) => {
+    res.status(500).send({ result: false, data: 'Unauthorized MongoDB: ' + err });
+  });
+
+});
+
+app.post('/api/upload-perizia', (req: any, res: any) => {
+
+  if (!req.headers['authorization'].length) {
+    res.status(401).send({ result: false, data: 'Unauthorized' });
+    return;
+  }
+
+  const token = req.headers['authorization'].split(' ')[1];
+
+  getCollection('Utenti').then((collection: Collection) => {
+    collection.findOne({ token: token }, {
+      projection: {
+        password: 0,
+      }}).then((utente: any) => {
+        
+      getCollection('Perizie').then((collection: Collection) => {
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const datePart = `${year}${month}${day}`;
+
+        collection.find({ codice_perizia: { $regex: `^PZ${datePart}-` } })
+          .project({ codice_perizia: 1 })
+          .sort({ codice_perizia: -1 })
+          .limit(1)
+          .toArray()
+          .then((results: any) => {
+            let lastNumber = 0;
+            if (results.length > 0) {
+              lastNumber = parseInt(results[0].codice_perizia.split('-')[1], 10);
+            }
+            const codice_perizia = `PZ${datePart}-${String(lastNumber + 1).padStart(3, '0')}`;
+            const data = Object.assign(req.body, { codice_operatore: utente.codice_operatore, codice_perizia });
+
+            collection.insertOne(data).then((insertResult: any) => {
+              if (insertResult) {
+                res.send({ result: true, data: insertResult });
+              } else {
+                res.status(401).send({ result: false, data: 'Unauthorized' });
+              }
+            }).catch((err: any) => {
+              console.error(err);
+              res.status(500).send({ result: false, data: 'Error inserting perizia' });
+            });
+          }).catch((err: any) => {
+            console.error(err);
+            res.status(500).send({ result: false, data: 'Error generating codice_perizia' });
+          });
+      });
+
+    }).catch((err: any) => {
+      console.error(err);
+      res.status(500).send({ result: false, data: 'Error retrieving user' });
     });
   });
 });
