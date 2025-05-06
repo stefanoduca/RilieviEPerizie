@@ -39,15 +39,19 @@ app.use('*', (req: any, res: any, next: any) => {
   next();
 });
 const whitelist = ['http://localhost:3000', 'http://localhost:4200', 'https://rilievieperizieduca.onrender.com', 'http://localhost:8100'];
-const corsOptions = {
-  origin: function (origin: any, callback: any) {
-    if (!origin || origin === 'http://localhost:8100') {
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    const trimmedOrigin = origin.trim();
+    console.log("Request from origin:", trimmedOrigin);
+    if (whitelist.includes(trimmedOrigin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS: " + trimmedOrigin));
     }
-  },
-  credentials: true,
+  }
 };
 app.use(cors(corsOptions));
 
