@@ -41,11 +41,14 @@ app.use('*', (req: any, res: any, next: any) => {
 const whitelist = ['http://localhost:3000', 'http://localhost:4200', 'https://rilievieperizieduca.onrender.com', 'http://localhost:8100'];
 const corsOptions = {
   origin: function (origin: any, callback: any) {
-    return callback(null, true);
+    if (!origin || origin === 'http://localhost:8100') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true,
 };
-app.use(cors(corsOptions));
 
 //Client routes
 
