@@ -210,7 +210,7 @@ app.post('/api/autentica', (req: any, res: any) => {
   
 });
 
-app.post('/api/cambia-password', (req: any, res: any) => {
+app.patch('/api/cambia-password', (req: any, res: any) => {
 
   const token = req.headers['authorization'].split(' ')[1];
 

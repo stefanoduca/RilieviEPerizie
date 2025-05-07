@@ -198,7 +198,7 @@ app.post('/api/autentica', (req, res) => {
         res.status(500).send({ result: false, data: 'Unauthorized MongoDB: ' + err });
     });
 });
-app.post('/api/cambia-password', (req, res) => {
+app.patch('/api/cambia-password', (req, res) => {
     const token = req.headers['authorization'].split(' ')[1];
     getCollection('Utenti').then((collection) => {
         collection.updateOne({ token: token, password: req.body.password }, { $set: { password: req.body.new_password, primo_accesso: false } }).then((data) => {
