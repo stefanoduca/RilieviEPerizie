@@ -166,8 +166,8 @@ app.post('/addOperatore', async (req: any, res: any) => {
       
       getCollection('Utenti').then((collection: Collection) => {
       
+        // Combina i dati del corpo della richiesta con il codice operatore e imposta i valori predefiniti per password, amministratore, primo accesso e numero di perizie
         data = Object.assign(req.body, {codice_operatore}, {password: "password", amministratore: false, primo_accesso: true, nPerizie: 0});
-        
         collection.insertOne(data).then((data: any) => {
           if (data) {
             res.send({ result: true, data: data });
@@ -211,11 +211,6 @@ app.post('/api/autentica', (req: any, res: any) => {
 });
 
 app.post('/api/cambia-password', (req: any, res: any) => {
-
-  if (!req.headers['authorization'].length) {
-    res.status(401).send({ result: false, data: 'Unauthorized' });
-    return;
-  }
 
   const token = req.headers['authorization'].split(' ')[1];
 
@@ -272,6 +267,7 @@ app.post('/api/upload-perizia', (req: any, res: any) => {
               lastNumber = parseInt(results[0].codice_perizia.split('-')[1], 10);
             }
             const codice_perizia = `PZ${datePart}-${String(lastNumber + 1).padStart(3, '0')}`;
+            // Combina il corpo della richiesta con il codice operatore e il codice perizia generato
             const data = Object.assign(req.body, { codice_operatore: utente.codice_operatore, codice_perizia });
 
             collection.insertOne(data).then((insertResult: any) => {
