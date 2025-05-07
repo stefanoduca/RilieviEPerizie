@@ -160,7 +160,7 @@ app.post('/addOperatore', (req, res) => __awaiter(void 0, void 0, void 0, functi
             let codice_operatore = "OP" + (parseInt(data[0].codice_operatore.split('OP')[1]) + 1).toString();
             getCollection('Utenti').then((collection) => {
                 // Combina i dati del corpo della richiesta con il codice operatore e imposta i valori predefiniti per password, amministratore, primo accesso e numero di perizie
-                data = Object.assign(req.body, { codice_operatore }, { password: "password", amministratore: false, primo_accesso: true, nPerizie: 0 });
+                data = Object.assign(req.body, { codice_operatore }, { password: "password", amministratore: false, primo_accesso: true, nPerizie: 0, token: "sjfbskejfbskdfjvb4343r53kb" });
                 collection.insertOne(data).then((data) => {
                     if (data) {
                         res.send({ result: true, data: data });
